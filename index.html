@@ -10,13 +10,23 @@
 
 <body onload="onInit()">
     <h1>Minesweeper game</h1>
-    <table class="board-container">
-        <tbody onclick="onCellClicked()" class="board"></tbody>
+    <hr>
+    <table  class="board-container">
+      
+
+
+        <tbody  class="board"></tbody>
         
     </table>
     <div class="modal">
         <!-- <button class="click" onclick="onInit()">Restart</button> -->
     </div>
+    <div class="levels-container">
+        <button class="level1 clickable" onclick="changeLevel(4)">Beginner</button>
+        <button class="level2 clickable" onclick="changeLevel(8)">Medium</button>
+        <button class="level3 clickable" onclick="changeLevel(12)">Expert</button>
+    </div>
+    
 
     <script src="js/game.js"></script>
     <script src="js/utils.js"></script>

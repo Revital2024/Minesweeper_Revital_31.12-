@@ -16,13 +16,13 @@ var gGame = {
     markedCount: 0,
     secsPassed: 0
 }
-// var gBoard = {
-//     minesAroundCount: 4,
-//     isShown: false,
-//     isMine: false,
-//     isMarked: true
+var gBoard = {
+    minesAroundCount: 4,
+    isShown: false,
+    isMine: false,
+    isMarked: true
 
-// }
+}
 
 var gLevel = {
     SIZE: 4,
@@ -33,11 +33,37 @@ var gLevel = {
 var board
 
 var MINE = '💣'
+var FLAG = '🚩'
+
+var numCells=0
 
 
 // console.log(gCell)
+// • Beginner (4 * 4 with 2 MINES)
+// • Medium (8 * 8 with 14 MINES)
+// • Expert (12 * 12 with 32 MINES)
+
+function changeLevel(level=4){
+    gLevel.SIZE=level
+    console.log(' gLevel.SIZE:', gLevel.SIZE)
+    if(gLevel.SIZE===8) gLevel.MINES=14
+    else if(gLevel.SIZE===12)gLevel.MINES=32
+    else gLevel.MINES=2
+    console.log( gLevel.SIZE)
+    restartGame()
+
+}
+
+function restartGame() {
+    gGame.isOn = false
+    gGame.shownCount = 0
+    gGame.markedCount = 0
+    gGame.secsPassed = 0
+    onInit()
+}
 
 function onInit() {
+    
     var board = buildBoard()
     console.table(board)
     renderBoard(board, '.board')
@@ -66,23 +92,28 @@ function getRandomMine() {
 }
 
 function buildBoard() {
+    
+    
     board = createMat(gLevel.SIZE, gLevel.SIZE)
+    console.log(' board', board)
     console.log(board)
 
     getRandomMine()
+
     for (var i = 0; i < board.length; i++) {
         for (var j = 0; j < board[i].length; j++) {
             if (!board[i][j].isMine) {
                 board[i][j] = {
-                    minesAroundCount: setMinesNegsCount(board, i, j),
                     isShown: false,
                     isMine: false,
-                    isMarked: true
+                    isMarked: true,
+                    minesAroundCount: setMinesNegsCount(board, i, j)
                 }
             }
-            console.log(`[${i}][${j}]:`, board[i][j])
+
         }
     }
+    console.log('buildBoard:', board)
 
     return board
 }
@@ -90,6 +121,10 @@ function buildBoard() {
 
 function setMinesNegsCount(board, rowIdx, colIdx) {
     var mineCount = 0
+    if (board[rowIdx][colIdx].isMine) {
+
+        return 0
+    }
 
     for (var i = rowIdx - 1; i <= rowIdx + 1; i++) {
         if (i < 0 || i >= board.length) continue
@@ -112,62 +147,107 @@ function renderBoard(board) {
         for (var j = 0; j < gLevel.SIZE; j++) {
             var cell = board[i][j]
             var className = `cell cell-${i}-${j}`
-            strHTML += `<td class="${className}" onclick="onCellClicked(this, ${i}, ${j})"></td>`
+            // strHTML += `<td class="${className}" onclick="onCellClicked(this, ${i}, ${j})"></td>`
+            // strHTML += `<td class="${className}" oncontextmenu="onCellMarked(event)"></td>`//להפוך את זה ללחיצה ימנית
+            strHTML += `<td class="${className}" onclick="onCellClicked(this, ${i}, ${j})" oncontextmenu="onCellMarked(this, ${i}, ${j})"></td>`
+
         }
         strHTML += '</tr>'
     }
     strHTML += '</table>'
-    const elContainer = document.querySelector('.board')
+    var elContainer = document.querySelector('.board')
     elContainer.innerHTML = strHTML
+    console.log('render:', elContainer)
 }
 
 function onCellClicked(elCell, i, j) {
-    console.log('Clicked function:',elCell, i, j)
+
     var cell = board[i][j]
-    
+
+
     console.log('var Cell:', cell)
 
     if (!cell.isShown) cell.isShown = true
-    if (board.isMine) {
-        cell.innerText = MINE
-        checkGameOver()
+    if (cell.isMine) {
+        elCell.innerText = MINE
+        gGame.shownCount ++
+
+
+
     } else {
-        cell.innerText = board.minesAroundCount
+        cell.innerText = board[i][j].minesAroundCount
         expandShown(board, elCell,
             i, j)
+            gGame.shownCount ++
     }
+    checkGameOver(i, j)
+    checkVictory()
 }
+
+
+// console.log('Board:', board)
+// console.log('i:', i)
+// console.log('j:', j)
+
 
 function expandShown(board, elCell, i, j) {
-    if (!board[i][j].isMine) {
-        for (var iIdx = i - 1; iIdx <= i + 1; iIdx++) {
-            if (iIdx < 0 || iIdx >= board.length) continue
-            for (var jIdx = j - 1; jIdx <= j + 1; jIdx++) {
-                if (jIdx < 0 || jIdx >= board[iIdx].length) continue
-                if (!board[iIdx][jIdx].isMine) elCell.innerText = board[iIdx][jIdx].minesAroundCount
+    if (!board[i][j].isMine && !board[i][j].isShown) {
+        board[i][j].isShown = true
+        elCell.innerText = board[i][j].minesAroundCount
+        if (board[i][j].minesAroundCount === 0) {
+            for (var iIdx = i - 1; iIdx <= i + 1; iIdx++) {
+                if (iIdx < 0 || iIdx >= board.length) continue
+                for (var jIdx = j - 1; jIdx <= j + 1; jIdx++) {
+                    if (jIdx < 0 || jIdx >= board[iIdx].length) continue
+                    expandShown(board, document.querySelector(`.cell-${iIdx}-${jIdx}`), iIdx, jIdx)
+                }
             }
         }
+    } else {
+        elCell.innerHTML = board[i][j].minesAroundCount
     }
+
 }
 
-function checkGameOver() {
-
-    // if(board.isMine) {
+function checkGameOver(i, j) {
+    var cell = board[i][j]
+    if (cell.isShown && cell.isMine) {
         alert('game over!')
+        gBoard.isOn = false
     }
 
 
 
-// if (num !== gNextNumber) return
+}
 
-// if (num === 1) {
-//     startTimer()
-// } else if (num === gSize ** 2) {
-//     clearInterval(gTimer)
-// }
-// if (gNextNumber !== gSize ** 2) gNextNumber++
+function checkVictory(){
+    var nonMineCells = gLevel.SIZE * gLevel.SIZE - gLevel.MINES
+    if(  nonMineCells ===  gGame.shownCount) alert('You win!')
+}
 
-// var elCell = document.querySelector('.panel )
-// elCell.innerText = `${`
+function onCellMarked(elCell) {
+    
+    // console.log('onCellMarked', i, j)
+    var cell = board[i][j]
 
-// elNumBtn.classList.add('clicked')
+    
+
+    if (!cell.isShown) {
+        if (!cell.isMarked) {
+            elCell.innerText = '🚩'
+            cell.isMarked = true
+            gGame.markedCount++
+        } else {
+          
+            elCell.innerText = ''
+            cell.isMarked = false
+            gGame.markedCount--
+        }
+    }
+        }
+   
+   
+
+
+
+
