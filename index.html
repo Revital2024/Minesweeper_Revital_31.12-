@@ -11,16 +11,22 @@
 <body onload="onInit()">
     <h1>Minesweeper game</h1>
     <hr>
-    <table  class="board-container">
+    <div id="stopwatch">00:00:00</div>
+    <table oncontextmenu="return false" class="board-container">
       
 
 
         <tbody  class="board"></tbody>
+        <div class="smiley">😃
+        </div>
+        <div class="lives">❤️❤️❤️</div>
         
     </table>
-    <div class="modal">
-        <!-- <button class="click" onclick="onInit()">Restart</button> -->
-    </div>
+    <!-- <div class="modal">
+      
+    </div> -->
+
+    
     <div class="levels-container">
         <button class="level1 clickable" onclick="changeLevel(4)">Beginner</button>
         <button class="level2 clickable" onclick="changeLevel(8)">Medium</button>
@@ -30,6 +36,9 @@
 
     <script src="js/game.js"></script>
     <script src="js/utils.js"></script>
+    <script src="js/timer.js"></script>
+    <script src="js/mine.js"></script>
+
 
 </body>
 
