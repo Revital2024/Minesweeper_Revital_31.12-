@@ -4,6 +4,7 @@ var startTime
 var stopwatchInterval
 var elapsedPausedTime = 0
 
+
 function startStopwatch() {
     if (!stopwatchInterval) {
         startTime = new Date().getTime() - elapsedPausedTime
@@ -25,16 +26,16 @@ function resetStopwatch() {
 }
 
 function updateStopwatch() {
-    var currentTime = new Date().getTime();
+    var currentTime = new Date().getTime()
     var elapsed = currentTime - startTime;
-    var seconds = Math.floor(elapsed / 1000);
-    var minutes = Math.floor(seconds / 60);
-    var hours = Math.floor(minutes / 60);
+    var seconds = Math.floor(elapsed / 1000)
+    var minutes = Math.floor(seconds / 60)
+    var hours = Math.floor(minutes / 60)
 
-    seconds %= 60;
-    minutes %= 60;
+    seconds %= 60
+    minutes %= 60
 
-    // Display the elapsed time in the format HH:MM:SS
+
     document.getElementById("stopwatch").innerHTML =
         (hours < 10 ? "0" : "") + hours + ":" +
         (minutes < 10 ? "0" : "") + minutes + ":" +

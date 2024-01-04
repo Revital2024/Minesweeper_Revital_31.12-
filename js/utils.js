@@ -5,17 +5,6 @@ function getRandomIntInclusive(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
-// function createMat(ROWS, COLS) {
-// 	const mat = []
-// 	for (var i = 0; i < ROWS; i++) {
-// 		const row = []
-// 		for (var j = 0; j < COLS; j++) {
-// 			row.push('[]')//לבדוק עם זה עוזר
-// 		}
-// 		mat.push(row)
-// 	}
-// 	return mat
-// }
 
 function createMat(rows, cols) {
     var mat = []
@@ -41,13 +30,13 @@ function copyMat(mat) {
 }
 
 function shuffleNums(nums) {
-	for (var i = nums.length - 1; i > 0; i--) {
-		const randIdx = Math.floor(Math.random() * (i + 1))
-		const temp = nums[i]
-		nums[i] = nums[randIdx]
-		nums[randIdx] = temp
-	}
-	return nums
+    for (var i = nums.length - 1; i > 0; i--) {
+        const randIdx = Math.floor(Math.random() * (i + 1))
+        const temp = nums[i]
+        nums[i] = nums[randIdx]
+        nums[randIdx] = temp
+    }
+    return nums
 }
 
 function getRandomColor() {

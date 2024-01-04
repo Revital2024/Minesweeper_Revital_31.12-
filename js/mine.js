@@ -8,7 +8,7 @@ var firstClickDone = false
 function setMinesNegsCount(board, rowIdx, colIdx) {
     var mineCount = 0
 
-    
+
     if (board[rowIdx][colIdx].isMine) {
 
         return 0
@@ -25,25 +25,43 @@ function setMinesNegsCount(board, rowIdx, colIdx) {
 
     return mineCount
 }
-
 function getRandomMine() {
     var minesPlaced = 0
 
-  
-        while (minesPlaced < gLevel.MINES) {
-            var randomI = getRandomIntInclusive(0, gLevel.SIZE - 1)
-            var randomJ = getRandomIntInclusive(0, gLevel.SIZE - 1)
-    
-            if (!board[randomI][randomJ].isMine) {
-                board[randomI][randomJ] = {
-                    minesAroundCount: setMinesNegsCount(board, randomI, randomJ),
-                    isShown: false,
-                    isMine: true,
-                    isMarked: true
-                }
-                minesPlaced++
+    while (minesPlaced < gLevel.MINES) {
+        var randomI = getRandomIntInclusive(0, gLevel.SIZE - 1)
+        var randomJ = getRandomIntInclusive(0, gLevel.SIZE - 1)
+
+        if (!board[randomI][randomJ].isMine) {
+            board[randomI][randomJ] = {
+                minesAroundCount: setMinesNegsCount(board, randomI, randomJ),
+                isShown: false,
+                isMine: true,
+                isMarked: true
             }
+            minesPlaced++
         }
     }
+}
+
+
+function replaceMine(rowIdx, colIdx) {
+    var randomI = getRandomIntInclusive(0, gLevel.SIZE - 1)
+    var randomJ = getRandomIntInclusive(0, gLevel.SIZE - 1)
+
+    var originalMineCell = board[rowIdx][colIdx]
+    var newMineCell = board[randomI][randomJ]
+
+    if (originalMineCell.isMine) {
+        originalMineCell.isMine = false
+        newMineCell.isMine = true
+
+        board[rowIdx][colIdx] = newMineCell
+        board[randomI][randomJ] = originalMineCell
+    }
+}
+
+
+
 
 

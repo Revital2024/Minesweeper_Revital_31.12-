@@ -23,9 +23,9 @@ var gLevel = {
 
 var board
 
-var elSmiley= document.querySelector('.smiley')
-var livesCount=3
-var elLive=document.querySelector('.lives')
+var elSmiley = document.querySelector('.smiley')
+var livesCount = 3
+var elLive = document.querySelector('.lives')
 
 
 
@@ -43,18 +43,19 @@ function changeLevel(level = 4) {
 }
 
 function restartGame() {
-    // gGame.isOn = false
+    gGame.isOn = true
     gGame.shownCount = 0
     gGame.markedCount = 0
     gGame.secsPassed = 0
-    livesCount=3
-    elSmiley.innerText='😃'
+    livesCount = 3
+    elLive.innerText = '❤️❤️❤️'
+    elSmiley.innerText = '😃'
     onInit()
 }
 
 function onInit() {
 
-    var board = buildBoard()
+    board = buildBoard()
     console.table(board)
     renderBoard(board, '.board')
     gGame.isOn = true
@@ -80,7 +81,7 @@ function buildBoard() {
                 board[i][j] = {
                     isShown: false,
                     isMine: false,
-                    isMarked: true,
+                    isMarked: false,
                     minesAroundCount: setMinesNegsCount(board, i, j)
                 }
             }
@@ -91,6 +92,7 @@ function buildBoard() {
 
     return board
 }
+
 
 
 function renderBoard(board) {
@@ -111,28 +113,40 @@ function renderBoard(board) {
     console.log('render:', elContainer)
 }
 
-function losingLive(){
+function losingLive() {
 
     livesCount--
- if(livesCount===2) elLive.innerText='❤️❤️'
- if(livesCount===1) elLive.innerText='❤️'
- if(livesCount===0) elLive.innerText=''
- 
-    
+    if (livesCount === 2) elLive.innerText = '❤️❤️'
+    if (livesCount === 1) elLive.innerText = '❤️'
+    if (livesCount === 0) elLive.innerText = ''
+
+
 }
 
 function onCellClicked(elCell, i, j) {
+    var audioBoom = new Audio('audio/boom.wav')
     if (!gGame.isOn) return
     var cell = board[i][j]
 
     if (gGame.isOn) {
-    
+
         if (!cell.isShown) {
-           
+
             cell.isShown = true
             if (cell.isMine) {
-                elCell.innerText = MINE
-                gGame.shownCount++
+                if (gGame.shownCount === 0) {
+                    replaceMine(cell, i, j)
+                    gGame.shownCount++
+                } else {
+                    elCell.innerText = MINE
+                    audioBoom.play()
+                    gGame.shownCount++
+                    elSmiley.innerText = '🤯'
+                    setTimeout(function () {
+                        elSmiley.innerHTML = '😃'
+                    }, 1000)
+                }
+
                 losingLive()
             } else {
                 expandShown(board, elCell, i, j)
@@ -150,6 +164,7 @@ function onCellClicked(elCell, i, j) {
 
 
 function expandShown(board, elCell, rowIdx, colIdx) {
+    elCell.classList.add('revealed')
     for (var i = rowIdx - 1; i <= rowIdx + 1; i++) {
         if (i < 0 || i >= board.length) continue
         for (var j = colIdx - 1; j <= colIdx + 1; j++) {
@@ -159,57 +174,29 @@ function expandShown(board, elCell, rowIdx, colIdx) {
             var currentCell = board[i][j]
 
             if (!currentCell.isMine && !currentCell.isShown) {
-                // elCell.innerText = currentCell.minesAroundCount
                 var neighborCell = document.querySelector(`.cell-${i}-${j}`)
                 neighborCell.innerText = currentCell.minesAroundCount
-              
+                neighborCell.classList.add('revealed')
+                currentCell.isShown = true
+                gGame.shownCount++
+
+                if (currentCell.minesAroundCount === 0) {
+                    expandShown(board, neighborCell, i, j)
 
 
-               
+
+                }
             }
         }
     }
+
 }
 
 
 
 
-
-
-// function expandShown(board, elCell, i, j) {
-//     console.log('התא שנחשף עכשיו הוא?', i, j)
-//     var cell = board[i][j]
-//     if (!board[i][j].isMine && !board[i][j].isShown) {
-//         console.log('הוא נכנס לתנאי הראשון')
-//         board[i][j].isShown = true
-//         if (board[i][j].minesAroundCount === 0) {
-//             console.log('הוא נכנס לתנאי השני')
-//             for (var iIdx = i - 1; iIdx <= i + 1; iIdx++) {
-//                 if (iIdx < 0 || iIdx >= board.length) continue
-//                 console.log('הוא נכנס לתנאי השלישי')
-//                 for (var jIdx = j - 1; jIdx <= j + 1; jIdx++) {
-//                     debugger
-//                     if (jIdx < 0 || jIdx >= board[iIdx].length) continue
-//                     expandShown(board, document.querySelector(`.cell-${iIdx}-${jIdx}`), iIdx, jIdx)
-//                     console.log('זה עובד לי :)')
-//                 }
-//             }
-
-//         } else {
-//             elCell.innerText = board[i][j].minesAroundCount
-//         }
-//     } else {
-//         elCell.innerText = board[i][j].minesAroundCount
-//     }
-// }
-
-
-
 function onCellMarked(elCell, i, j) {
     if (!gGame.isOn) return
-    console.log('דגל')
-
-    // console.log('onCellMarked', i, j)
     var cell = board[i][j]
 
 
@@ -236,33 +223,40 @@ function onCellMarked(elCell, i, j) {
 
 function checkGameOver(i, j) {
     var cell = board[i][j]
-    if (livesCount===0) {
-        setTimeout(() => {
-            alert('game over!')
-        }, "100")
+
+
+    if (livesCount === 0 && gGame.isOn) {
+
 
         gGame.isOn = false
         console.log(gBoard.isOn)
-        // stopStopwatch()
         stopStopwatch(gGame.secsPassed)
-        elSmiley.innerText='🤯'
+        elSmiley.innerText = '🤯'
+
     }
 
 
 
 }
+
+
 
 function checkVictory() {
-    var nonMineCells = gLevel.SIZE * gLevel.SIZE - gLevel.MINES
-    if (nonMineCells === gGame.shownCount) {
-        setTimeout(() => {
-            alert('You win!')
-        }, "100")
+    var nonMineCellsCount = 0
 
+    for (var i = 0; i < gLevel.SIZE; i++) {
+        for (var j = 0; j < gLevel.SIZE; j++) {
+            var cell = board[i][j]
+            if (!cell.isMine && cell.isShown) {
+                nonMineCellsCount++
+            }
+        }
+    }
+
+    if (nonMineCellsCount === gLevel.SIZE * gLevel.SIZE - gLevel.MINES) {
+
+        gGame.isOn = false
         stopStopwatch()
-        elSmiley.innerText='😎'
+        elSmiley.innerText = '😎'
     }
 }
-
-
-

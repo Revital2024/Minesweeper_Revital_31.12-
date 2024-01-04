@@ -5,30 +5,37 @@ body {
 }
 
 h1 {
-    color: rgb(125, 122, 127);
-    font-family: 'Arial', sans-serif;
+    color: rgb(228, 232, 25);
     text-align: center;
     text-transform: uppercase;
     letter-spacing: 2px;
     margin-bottom: 20px;
-    font-size: 34px;
+    font-size: 200%;
+    font-family:verdana
+   
 }
 
-.hr-container {
-    margin-top: 20px; 
+#stopwatch {
+    font-size: 2em;
+    color: #e67d14;
+    margin-bottom: 20px;
 }
+
 
 .board-container {
     display: flex;
-    justify-content: center;
     align-items: center;
-    height: 100vh; 
+    height: 150vh; 
+    flex-direction: column; 
+    justify-content: space-between;
     
  
 }
 
 .board {
     border-collapse: collapse;
+    flex-grow: 1;
+    margin-bottom:0px;
  
 }
 
@@ -45,14 +52,20 @@ h1 {
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    margin: auto;
+    margin: 10px;
 }
 
 .smiley{
-    font-size:100px;
+    font-size:80px;
 
 } 
 
 .lives{
-    font-size:100px;
+    font-size:80px;
+}
+
+.board td.cell.revealed {
+    background-color: #ccc; 
+    color: #000; 
+   
 }
