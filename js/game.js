@@ -22,6 +22,7 @@ var gLevel = {
 
 
 var board
+var timeout
 
 var elSmiley = document.querySelector('.smiley')
 var livesCount = 3
@@ -49,7 +50,8 @@ function restartGame() {
     gGame.secsPassed = 0
     livesCount = 3
     elLive.innerText = '❤️❤️❤️'
-    elSmiley.innerText = '😃'
+
+
     onInit()
 }
 
@@ -59,6 +61,7 @@ function onInit() {
     console.table(board)
     renderBoard(board, '.board')
     gGame.isOn = true
+    elSmiley.innerText = '😃'
     resetStopwatch()
 
 
@@ -144,7 +147,9 @@ function onCellClicked(elCell, i, j) {
                     elSmiley.innerText = '🤯'
                     setTimeout(function () {
                         elSmiley.innerHTML = '😃'
+
                     }, 1000)
+
                 }
 
                 losingLive()
@@ -153,8 +158,10 @@ function onCellClicked(elCell, i, j) {
                 gGame.shownCount++
                 gGame.secsPassed = startStopwatch()
             }
-            checkGameOver(i, j)
             checkVictory()
+
+            checkGameOver(i, j)
+
         }
     }
 }
@@ -226,12 +233,13 @@ function checkGameOver(i, j) {
 
 
     if (livesCount === 0 && gGame.isOn) {
-
-
+        clearTimeout(timeout)
         gGame.isOn = false
         console.log(gBoard.isOn)
         stopStopwatch(gGame.secsPassed)
         elSmiley.innerText = '🤯'
+        revealAllCells()
+
 
     }
 
@@ -258,5 +266,30 @@ function checkVictory() {
         gGame.isOn = false
         stopStopwatch()
         elSmiley.innerText = '😎'
+        revealAllCells()
+
     }
 }
+
+
+function revealAllCells() {
+    for (var i = 0; i < gLevel.SIZE; i++) {
+        for (var j = 0; j < gLevel.SIZE; j++) {
+            var cell = board[i][j];
+            var elCell = document.querySelector(`.cell-${i}-${j}`)
+
+            if (!cell.isShown) {
+                cell.isShown = true
+
+                if (cell.isMine) {
+                    elCell.innerText = MINE
+                } else {
+                    elCell.innerText = cell.minesAroundCount
+                }
+
+
+            }
+        }
+    }
+}
+

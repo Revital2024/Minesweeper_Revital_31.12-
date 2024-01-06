@@ -1,71 +1,95 @@
-body {
-    font-family: Arial, Helvetica, sans-serif;
-    text-align: center;
-    background-color: rgb(74, 71, 73);
-}
-
-h1 {
-    color: rgb(228, 232, 25);
-    text-align: center;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    margin-bottom: 20px;
-    font-size: 200%;
-    font-family:verdana
-   
-}
-
-#stopwatch {
-    font-size: 2em;
-    color: #e67d14;
-    margin-bottom: 20px;
-}
+ body {
+     height: 100%;
+     margin: 0;
+     font-family: Arial, Helvetica, sans-serif;
+     text-align: center;
+ }
 
 
-.board-container {
-    display: flex;
-    align-items: center;
-    height: 150vh; 
-    flex-direction: column; 
-    justify-content: space-between;
-    
- 
-}
+ .background-image {
+     background-image: url('/pic/1.jpg');
+     background-size: cover;
+     background-position: center;
+     background-repeat: no-repeat;
+     position: fixed;
+     top: 0;
+     left: 0;
+     width: 100%;
+     height: 100%;
+     z-index: -1;
+ }
 
-.board {
-    border-collapse: collapse;
-    flex-grow: 1;
-    margin-bottom:0px;
- 
-}
+ h1 {
+     color: rgb(92, 43, 4);
+     text-align: center;
+     text-transform: uppercase;
+     letter-spacing: 2px;
+     margin-bottom: 20px;
+     font-size: 200%;
+     font-family: verdana
+ }
 
-.board td {
-    border: 10px solid rgb(51, 48, 52);
-    padding: 30px;
-    text-align: center;
-    
-}
+ #stopwatch {
+     font-size: 2em;
+     color: #e67d14;
+     margin-bottom: 20px;
+ }
 
-.level1, .level2, .level3 {
-    padding: 10px 20px;
-    font-size: 16px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin: 10px;
-}
 
-.smiley{
-    font-size:80px;
+ .board-container {
+     display: flex;
+     align-items: center;
+     height: 150vh;
+     flex-direction: column;
+     justify-content: space-between;
 
-} 
 
-.lives{
-    font-size:80px;
-}
 
-.board td.cell.revealed {
-    background-color: #ccc; 
-    color: #000; 
-   
-}
+ }
+
+ .board {
+     flex-grow: 1;
+     margin-bottom: 0px;
+     border-collapse: separate;
+     border-spacing: 15px;
+
+ }
+
+ .board td {
+     border: 10px solid rgb(53, 32, 1);
+     padding: 15px;
+     text-align: center;
+     transition: background-color 0.3s ease
+ }
+
+ .level1,
+ .level2,
+ .level3 {
+     padding: 10px 20px;
+     font-size: 14px;
+     border: none;
+     border-radius: 5px;
+     cursor: pointer;
+     margin: 10px;
+ }
+
+ .smiley {
+     font-size: 80px;
+
+ }
+
+ .lives {
+     font-size: 50px;
+     margin-right: 20px
+ }
+
+ .board td.cell.revealed {
+     background-color: #ccc;
+     color: #000;
+
+ }
+
+ .board td:hover {
+     background-color: #a0b40b;
+     cursor: pointer;
+ }

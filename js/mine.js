@@ -46,6 +46,7 @@ function getRandomMine() {
 
 
 function replaceMine(rowIdx, colIdx) {
+    if (!gGame.isOn) return
     var randomI = getRandomIntInclusive(0, gLevel.SIZE - 1)
     var randomJ = getRandomIntInclusive(0, gLevel.SIZE - 1)
 
@@ -60,8 +61,6 @@ function replaceMine(rowIdx, colIdx) {
         board[randomI][randomJ] = originalMineCell
     }
 }
-
-
 
 
 
